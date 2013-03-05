@@ -591,7 +591,7 @@ popd
             # In this case we need to poll Jenkins to see if the build
             # is finished
 
-            $stderr.puts "Running: #{build_url}console"
+            $stderr.puts "Running: #{build_url}consoleFull"
 
             # If the build is finished, update with the results
             if JenkinsAPI.is_build_running?(build_url, branch, settings)
