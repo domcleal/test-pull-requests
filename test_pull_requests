@@ -105,7 +105,7 @@ $not_mergable_cache = Properties['not_mergable_cache'] || '~/test_pull_request_n
 
 ACTION_PREFIX               = Properties['action_required_prefix']
 ACTION_NOT_MERGE            = "#{ACTION_PREFIX} Pull request cannot be automatically merged"
-ACTION_NOT_TEAM             = "#{ACTION_PREFIX} Please contact #{Properties['irc_channel']} to have this pull request manually reviewed and tested"
+ACTION_NOT_TEAM             = "#{ACTION_PREFIX} You're not in the automated testing whitelist.  Please contact us at #{Properties['irc_channel']} to have this pull request manually reviewed and tested."
 ACTION_UNSUPPORTED_BRANCH   = "#{ACTION_PREFIX} Only pull request(s) from #{$branches.pretty_inspect.chomp} are handled by the #{Properties['bot_github_user']}"
 
 EVALUATED_MARKER = "Evaluated up to %s"
