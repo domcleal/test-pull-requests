@@ -763,6 +763,8 @@ popd
         $stderr.puts "Processing repo '#{repo}'"
         list_pull_requests(repo).each do |req|
           id = req['number']
+          next if Properties['oldest_pr'] and id.to_i < Properties['oldest_pr']
+
           $stderr.puts "Analyzing pull request ##{id}"
         
           branch = req['base']['ref']
