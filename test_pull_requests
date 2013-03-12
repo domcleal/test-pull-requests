@@ -195,11 +195,18 @@ module Hub
     end
 
     def add_status(sha, repo, state, url, desc)
-      $stderr.puts "Updating status of '#{sha}' with state #{state}: '#{desc}'"
-      params = { :state => state, :target_url => url, :description => desc.strip}
-      res = post "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/statuses/%s" % [sha], params
-      res.error! unless res.success?
-      res.data
+      desc.strip!
+      bot_status = get_status_with_prefix(sha, repo, Properties['jenkins_url'], statuses)
+
+      if bot_status && bot_status['state'] == state && bot_status['description'] == desc && bot_status['target_url'] == url
+        bot_status
+      else
+        $stderr.puts "Updating status of '#{sha}' with state #{state}: '#{desc}'"
+        params = { :state => state, :target_url => url, :description => desc}
+        res = post "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/statuses/%s" % [sha], params
+        res.error! unless res.success?
+        res.data
+      end
     end
 
     # Verifies the user is part of a valid team
@@ -354,9 +361,6 @@ popd
 
       yield bot_status['id'], bot_status['state'], bot_status['description'], bot_status['target_url'], Time.parse(bot_status['updated_at'])
     end
-    
-    #def create_or_update_comment(issue_id, repo, url_prefix, comment, comments=nil)
-    #def delete_comment_with_prefix(issue_id, repo, comment_prefix, comments=nil)
     
     #
     # Gets the current status
