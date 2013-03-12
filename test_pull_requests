@@ -105,7 +105,7 @@ $not_mergable_cache = Properties['not_mergable_cache'] || '~/test_pull_request_n
 
 ACTION_PREFIX               = Properties['action_required_prefix']
 ACTION_NOT_MERGE            = "#{ACTION_PREFIX} Pull request cannot be automatically merged"
-ACTION_NOT_TEAM             = "#{ACTION_PREFIX} You're not in the automated testing whitelist.  Please contact us at #{Properties['irc_channel']} to have this pull request manually reviewed and tested."
+ACTION_NOT_TEAM             = "#{ACTION_PREFIX} You're not in the automated testing whitelist. Please contact us at #{Properties['irc_channel']} to have this pull request manually tested."
 ACTION_UNSUPPORTED_BRANCH   = "#{ACTION_PREFIX} Only pull request(s) from #{$branches.pretty_inspect.chomp} are handled by the #{Properties['bot_github_user']}"
 
 def branch_settings(branch, settings)
@@ -196,7 +196,7 @@ module Hub
 
     def add_status(sha, repo, state, url, desc)
       $stderr.puts "Updating status of '#{sha}' with state #{state}: '#{desc}'"
-      params = { :state => state, :target_url => url, :description => desc}
+      params = { :state => state, :target_url => url, :description => desc.strip}
       res = post "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/statuses/%s" % [sha], params
       res.error! unless res.success?
       res.data
