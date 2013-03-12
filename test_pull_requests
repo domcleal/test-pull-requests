@@ -196,7 +196,7 @@ module Hub
 
     def add_status(sha, repo, state, url, desc)
       desc.strip!
-      bot_status = get_status_with_prefix(sha, repo, Properties['jenkins_url'], statuses)
+      bot_status = get_status_with_prefix(sha, repo, Properties['jenkins_url'])
 
       if bot_status && bot_status['state'] == state && bot_status['description'] == desc && bot_status['target_url'] == url
         bot_status
