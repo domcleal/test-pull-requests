@@ -920,7 +920,7 @@ popd
           # Now you can safely return with the submission registered
           return Properties['jenkins_url'] + 'job/' + branch_settings(branch, settings)['jenkins_job_name'] + "/#{next_build_num}/"
         else
-          raise "Jenkins job submission failed for pull request"
+          raise "Jenkins job submission failed for pull request: #{response.inspect}\n#{response.body}"
         end
       end
     end
@@ -934,7 +934,7 @@ popd
           result = JSON.parse(response.body)["result"]
           return  result == "SUCCESS" || result == "UNSTABLE"
         else
-          raise "Jenkins connection error"
+          raise "Jenkins connection error: #{response.inspect}\n#{response.body}"
         end
       end
     end
@@ -948,7 +948,7 @@ popd
         if response.kind_of? Net::HTTPSuccess
           JSON.parse(response.body)["nextBuildNumber"].to_i
         else
-          raise "Jenkins connection error"
+          raise "Jenkins connection error: #{response.inspect}\n#{response.body}"
         end
       end
     end
@@ -980,7 +980,7 @@ popd
         if response.kind_of? Net::HTTPSuccess
           return JSON.parse(response.body)["building"]
         else
-          raise "Jenkins connection error"
+          raise "Jenkins connection error: #{response.inspect}\n#{response.body}"
         end
       end
     end
@@ -993,7 +993,7 @@ popd
           job = JSON.parse(response.body)
           return job["result"]
         else
-          raise "Jenkins connection error"
+          raise "Jenkins connection error: #{response.inspect}\n#{response.body}"
         end
       end
     end
