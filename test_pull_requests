@@ -373,9 +373,8 @@ popd
 
       # See if we can find an existing bot status
       statuses.each do |status|
-        if status['target_url'] && status['target_url'].start_with?(url_prefix) && (status['creator']['login'] == Properties['bot_github_user'])
+        if status['target_url'] && status['target_url'].start_with?(url_prefix) && (status['creator']['login'] == Properties['bot_github_user']) && (prefix_status.nil? || prefix_status['id'] < status['id'])
           prefix_status = status
-          break
         end
       end
 
