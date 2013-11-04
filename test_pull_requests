@@ -763,7 +763,7 @@ popd
               add_status(req['head']['sha'], repo, 'error', Properties['jenkins_url'], ACTION_NOT_TEAM)
             end
           else
-            add_status(req['head']['sha'], repo, 'error', Properties['jenkins_url'], ACTION_UNSUPPORTED_BRANCH)
+            #add_status(req['head']['sha'], repo, 'error', Properties['jenkins_url'], ACTION_UNSUPPORTED_BRANCH)
           end
         end
       end
