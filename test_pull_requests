@@ -807,6 +807,29 @@ popd
         end
       end
     end
+
+    # wrappers for get/post that retry on error
+    alias_method :get_without_retry, :get
+    def get url, &block
+      res = get_without_retry(url, &block)
+      n = 3
+      while res.code >= 500 && res.code < 600
+        break if (n -= 1) == 0
+        res = get_without_retry(url, &block)
+      end
+      res
+    end
+
+    alias_method :post_without_retry, :post
+    def post url, params = nil, &block
+      res = post_without_retry(url, params, &block)
+      n = 3
+      while res.code >= 500 && res.code < 600
+        break if (n -= 1) == 0
+        res = post_without_retry(url, params, &block)
+      end
+      res
+    end
   end
 
   #
