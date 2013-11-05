@@ -813,7 +813,7 @@ popd
     def get url, &block
       res = get_without_retry(url, &block)
       n = 3
-      while res.code >= 500 && res.code < 600
+      while res.code.to_i >= 500 && res.code.to_i < 600
         break if (n -= 1) == 0
         res = get_without_retry(url, &block)
       end
@@ -824,7 +824,7 @@ popd
     def post url, params = nil, &block
       res = post_without_retry(url, params, &block)
       n = 3
-      while res.code >= 500 && res.code < 600
+      while res.code.to_i >= 500 && res.code.to_i < 600
         break if (n -= 1) == 0
         res = post_without_retry(url, params, &block)
       end
