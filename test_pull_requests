@@ -40,6 +40,8 @@ Options:
     The repo of the pull request
 -p|--properties <path>
     Path to the properties/configuration file (default: ~/.test_pull_requests.json)
+--pull_request <number>
+    Only check PRs with this ID, saves time when processing from hooks
 USAGE
   exit 255
 end
@@ -50,7 +52,8 @@ opts = GetoptLong.new(
   ["--local_merge_pull_request", GetoptLong::REQUIRED_ARGUMENT],
   ["--test_merge_pull_request",  GetoptLong::REQUIRED_ARGUMENT],
   ["--repo",                     GetoptLong::REQUIRED_ARGUMENT],
-  ["--properties",         "-p", GetoptLong::REQUIRED_ARGUMENT]
+  ["--properties",         "-p", GetoptLong::REQUIRED_ARGUMENT],
+  ["--pull_request",             GetoptLong::REQUIRED_ARGUMENT]
 )
 
 args = {}
@@ -68,6 +71,7 @@ merge_pull_id = args[:merge_pull_request]
 local_merge_pull_id = args[:local_merge_pull_request]
 test_merge_pull_id = args[:test_merge_pull_request]
 pull_id_repo = args[:repo]
+only_pr_id = args[:pull_request]
 
 include Hub
 
@@ -696,7 +700,7 @@ popd
     # Processes a list of the valid pull requests that are mergeable
     # and are submitted by a trusted user
     #
-    def process_pull_requests
+    def process_pull_requests(only_id=nil)
       pull_requests = []
       mergeability_in_flux = false
       $repo_to_pull_regex.keys.each do |repo|
@@ -706,6 +710,7 @@ popd
           next if Properties['oldest_pr'] and id.to_i < Properties['oldest_pr']
 
           $stderr.puts "Analyzing pull request ##{id}"
+          next if only_id && id.to_i != only_id.to_i
         
           branch = req['base']['ref']
           
@@ -993,6 +998,6 @@ elsif test_merge_pull_id
 else
   # Process all the pull requests for testing
   $stderr.puts "Processing pull requests..."
-  @api_client.process_pull_requests
+  @api_client.process_pull_requests(only_pr_id)
   $stderr.puts "Done\n"
 end
