@@ -132,7 +132,7 @@ end
 module Hub
   class GitHubAPI
     def list_pull_requests(repo)
-      res = get "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/pulls"
+      res = get "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/pulls?per_page=100"
       rate_limit_remaining = res.header['X-RateLimit-Remaining']
       $stderr.puts "Rate limit remaining: #{rate_limit_remaining}"
       if rate_limit_remaining.to_i < 100
