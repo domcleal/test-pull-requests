@@ -871,6 +871,7 @@ popd
                     when :number; pull_request['number']
                     when :owner; pull_request['head']['repo']['owner']['login']
                     when :ref; pull_request['head']['ref']
+                    when :sha; pull_request['head']['sha']
                     when :git_url; pull_request['head']['repo']['git_url']
                   end
           pull_id_params += "&#{param}=#{value}"
