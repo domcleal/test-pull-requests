@@ -868,10 +868,10 @@ popd
         pull_id_param = {:number => pull_id_param} if pull_id_param.is_a? String
         pull_id_param.each do |type,param|
           value = case type.to_sym
-                    when :number: pull_request['number']
-                    when :owner: pull_request['head']['repo']['owner']['login']
-                    when :ref: pull_request['head']['ref']
-                    when :git_url: pull_request['head']['repo']['git_url']
+                    when :number; pull_request['number']
+                    when :owner; pull_request['head']['repo']['owner']['login']
+                    when :ref; pull_request['head']['ref']
+                    when :git_url; pull_request['head']['repo']['git_url']
                   end
           pull_id_params += "&#{param}=#{value}"
           first_valid_repo = repo unless first_valid_repo
