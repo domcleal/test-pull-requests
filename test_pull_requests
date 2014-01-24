@@ -864,9 +864,16 @@ popd
       pull_id_params = "&BRANCH=#{branch}"
       first_valid_repo = nil
       repo_to_pull_request.each do |repo, pull_request|
-        pull_id_param = settings['repo_to_pull_id_param'][repo]
-        if pull_id_param
-          pull_id_params += "&#{pull_id_param}=#{pull_request['number']}"
+        pull_id_param = settings['repo_to_pull_id_param'][repo] || {}
+        pull_id_param = {:number => pull_id_param} if pull_id_param.is_a? String
+        pull_id_param.each do |type,param|
+          value = case type.to_sym
+                    when :number: pull_request['number']
+                    when :owner: pull_request['head']['repo']['owner']['login']
+                    when :ref: pull_request['head']['ref']
+                    when :git_url: pull_request['head']['repo']['git_url']
+                  end
+          pull_id_params += "&#{param}=#{value}"
           first_valid_repo = repo unless first_valid_repo
         end
       end
