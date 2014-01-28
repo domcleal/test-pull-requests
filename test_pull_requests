@@ -873,6 +873,7 @@ popd
                     when :ref; pull_request['head']['ref']
                     when :sha; pull_request['head']['sha']
                     when :git_url; pull_request['head']['repo']['git_url']
+                    when :base_branch; pull_request['base']['ref']
                   end
           pull_id_params += "&#{param}=#{value}"
           first_valid_repo = repo unless first_valid_repo
