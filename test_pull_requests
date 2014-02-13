@@ -533,6 +533,7 @@ popd
 
       updated_state = nil
       updated_desc = nil
+      updated_url = nil
       # Find the bot status for this pull request (or create one)
       process_or_create_status(req['head']['sha'], base_repo, settings, statuses) do |status_id, state, desc, build_url, status_updated_at|
         submit_test_job = false
@@ -559,7 +560,9 @@ popd
               end
             else
               updated_state = 'pending'
-              updated_desc = "Waiting for stable build of '#{branch_settings(branch, settings)['downstream_job_name']}'"
+              downstream_job = branch_settings(branch, settings)['downstream_job_name']
+              updated_desc = "Waiting for stable build of '#{downstream_job}'"
+              updated_url = Properties['jenkins_url'] + "job/#{downstream_job}/lastCompletedBuild"
             end
           when /^Waiting/
             $stderr.puts "Waiting..."
@@ -622,7 +625,9 @@ popd
                 submit_test_job = true
               else
                 updated_state = 'pending'
-                updated_desc = "Waiting for stable build of '#{branch_settings(branch, settings)['downstream_job_name']}'"
+                downstream_job = branch_settings(branch, settings)['downstream_job_name']
+                updated_desc = "Waiting for stable build of '#{downstream_job}'"
+                updated_url = Properties['jenkins_url'] + "job/#{downstream_job}/lastCompletedBuild"
               end
             end
 
@@ -646,7 +651,9 @@ popd
                     submit_test_job = true
                   else
                     updated_state = 'pending'
-                    updated_desc = "Waiting for stable build of '#{branch_settings(branch, settings)['downstream_job_name']}'"
+                    downstream_job = branch_settings(branch, settings)['downstream_job_name']
+                    updated_desc = "Waiting for stable build of '#{downstream_job}'"
+                    updated_url = Properties['jenkins_url'] + "job/#{downstream_job}/lastCompletedBuild"
                   end
                 end
               else
@@ -666,10 +673,10 @@ popd
         if submit_test_job
           submit_tests(req, repo_to_pull_request, base_repo, branch, settings)
         elsif updated_desc and updated_state
-          add_status(req['head']['sha'], base_repo, updated_state, build_url, updated_desc)
+          add_status(req['head']['sha'], base_repo, updated_state, updated_url || build_url, updated_desc)
           repo_to_pull_request.each do |repo, pull_request|
             next if repo == base_repo
-            add_status(pull_request['head']['sha'], repo, updated_state, build_url, updated_desc)
+            add_status(pull_request['head']['sha'], repo, updated_state, updated_url || build_url, updated_desc)
           end
         end
       end
