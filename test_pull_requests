@@ -963,6 +963,8 @@ popd
         response = http.request request
         if response.kind_of? Net::HTTPSuccess
           return JSON.parse(response.body)["building"]
+        elsif response.kind_of? Net::HTTPNotFound
+          return false
         else
           raise "Jenkins connection error: #{response.inspect}\n#{response.body}"
         end
@@ -976,6 +978,8 @@ popd
         if response.kind_of? Net::HTTPSuccess
           job = JSON.parse(response.body)
           return job["result"]
+        elsif response.kind_of? Net::HTTPNotFound
+          return 'MISSING'
         else
           raise "Jenkins connection error: #{response.inspect}\n#{response.body}"
         end
