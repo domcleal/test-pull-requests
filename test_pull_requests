@@ -549,14 +549,14 @@ popd
                 repo_to_pull_request.each do |repo, pull_request|
                   next if repo == base_repo
                   if !user_trusted?(pull_request['user']['login'], repo, settings) && trigger_updated_at < Time.parse(pull_request['head']['repo']['updated_at'])
-                    add_status(pull_request['head']['sha'], base_repo, 'error', Properties['jenkins_url'], ACTION_NOT_TEAM)
+                    add_status(pull_request['head']['sha'], base_repo, 'pending', Properties['jenkins_url'], ACTION_NOT_TEAM)
                     break
                   end
                 end
                 update_evaluated_markers(repo_to_pull_request, trigger_updated_at, settings)
                 submit_test_job = true
               else
-                add_status(req['head']['sha'], base_repo, 'error', Properties['jenkins_url'], ACTION_NOT_TEAM)
+                add_status(req['head']['sha'], base_repo, 'pending', Properties['jenkins_url'], ACTION_NOT_TEAM)
               end
             else
               updated_state = 'pending'
@@ -657,13 +657,13 @@ popd
                   end
                 end
               else
-                add_status(req['head']['sha'], base_repo, 'error', Properties['jenkins_url'], ACTION_NOT_TEAM)
+                add_status(req['head']['sha'], base_repo, 'pending', Properties['jenkins_url'], ACTION_NOT_TEAM)
                 submit_test_job = false
                 break
               end
             end
           else
-            add_status(req['head']['sha'], base_repo, 'error', Properties['jenkins_url'], ACTION_NOT_TEAM)
+            add_status(req['head']['sha'], base_repo, 'pending', Properties['jenkins_url'], ACTION_NOT_TEAM)
             submit_test_job = false
           end
           if submit_test_job
@@ -772,7 +772,7 @@ popd
               end
             end
             if permission_denied.include? true
-              add_status(req['head']['sha'], repo, 'error', Properties['jenkins_url'], ACTION_NOT_TEAM)
+              add_status(req['head']['sha'], repo, 'pending', Properties['jenkins_url'], ACTION_NOT_TEAM)
             end
           else
             #add_status(req['head']['sha'], repo, 'error', Properties['jenkins_url'], ACTION_UNSUPPORTED_BRANCH)
