@@ -452,15 +452,18 @@ popd
     
     def get_updated_at(pull_request)
       commits = get_commits(pull_request['number'], pull_request['base']['repo']['name'])
-      statuses = get_statuses(commits.last['sha'], pull_request['base']['repo']['name'])
+      last_sha = pull_request['head']['sha']
+      last_commit = commits.find { |c| c['sha'] == last_sha }
+
+      statuses = get_statuses(last_sha, pull_request['base']['repo']['name'])
       changed_after_eval = get_evaluated_time(statuses).nil?
 
       #GitHub API isn't consistent here
       updated_at_str = nil
-      if commits.last.has_key?('commit')
-        updated_at_str = commits.last['commit']['committer']['date']
+      if last_commit.has_key?('commit')
+        updated_at_str = last_commit['commit']['committer']['date']
       else
-        updated_at_str = commits.last['committer']['date']
+        updated_at_str = last_commit['committer']['date']
       end
       
       updated_at = Time.parse(updated_at_str)
