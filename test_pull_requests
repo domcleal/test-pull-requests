@@ -187,7 +187,7 @@ module Hub
     end
 
     def get_comments(issue_id, repo)
-      res = get "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/issues/%s/comments" % issue_id
+      res = get "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/issues/%s/comments?per_page=100" % issue_id
       res.error! unless res.success?
       res.data
     end
