@@ -178,7 +178,7 @@ module Hub
         $commits[repo] = {}
       end
       unless commits
-        res = get "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/pulls/%s/commits" % id
+        res = get "https://api.github.com/repos/#{Properties['github_user']}/#{repo}/pulls/%s/commits?per_page=100" % id
         res.error! unless res.success?
         commits = res.data
         $commits[repo][id] = commits
