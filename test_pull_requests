@@ -19,6 +19,7 @@ require 'pp'
 require 'net/https'
 require 'getoptlong'
 require 'time'
+require 'cgi'
 
 def usage
   puts <<USAGE
@@ -871,7 +872,7 @@ popd
       next_build_num = get_next_build(branch, settings)
       build_uri = URI(Properties['jenkins_url'] + 'job/' + branch_settings(branch, settings)['jenkins_job_name'] + "/buildWithParameters?token=#{branch_settings(branch, settings)['build_token']}")
 
-      pull_id_params = "&BRANCH=#{branch}"
+      pull_id_params = "&BRANCH=#{CGI::escape(branch)}"
       first_valid_repo = nil
       repo_to_pull_request.each do |repo, pull_request|
         pull_id_param = settings['repo_to_pull_id_param'][repo] || {}
@@ -885,7 +886,7 @@ popd
                     when :git_url; pull_request['head']['repo']['git_url']
                     when :base_branch; pull_request['base']['ref']
                   end
-          pull_id_params += "&#{param}=#{value}"
+          pull_id_params += "&#{param}=#{CGI::escape(value)}"
           first_valid_repo = repo unless first_valid_repo
         end
       end
@@ -894,7 +895,7 @@ popd
         addtl_jenkins_params = branch_settings(branch, settings)['addtl_jenkins_params']
         addtl_jenkins_params[Properties['repo_groups'][first_valid_repo]].each do |key, value|
           value.gsub!('*', branch)
-          pull_id_params += "&#{key}=#{value}"
+          pull_id_params += "&#{key}=#{CGI::escape(value)}"
         end if addtl_jenkins_params
       end
 
